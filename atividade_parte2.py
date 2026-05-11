@@ -1,0 +1,50 @@
+import pandas as pd  # pyright: ignore[reportMissingModuleSource]
+import numpy as np  # pyright: ignore[reportMissingImports]
+import matplotlib.pyplot as plt  # pyright: ignore[reportMissingModuleSource]
+
+# Lendo o arquivo
+df = pd.read_excel(
+    'default_of_credit_card_clients__courseware_version_1_21_19.xls', header=1)
+
+# EXERCÍCIO 1: Criando as listas de nomes
+bill_feats = ['BILL_AMT1', 'BILL_AMT2', 'BILL_AMT3',
+              'BILL_AMT4', 'BILL_AMT5', 'BILL_AMT6']
+pay_feats = ['PAY_AMT1', 'PAY_AMT2', 'PAY_AMT3',
+             'PAY_AMT4', 'PAY_AMT5', 'PAY_AMT6']
+
+# EXERCÍCIO 2: Resumo das Faturas
+print("Resumo das Faturas:")
+print(df[bill_feats].describe())
+
+# EXERCÍCIO 3: Gráfico das Faturas
+df[bill_feats].hist(bins=20, layout=(2, 3), figsize=(10, 6))
+plt.tight_layout()
+plt.show()
+
+# EXERCÍCIO 4: Resumo dos Pagamentos
+print("Resumo dos Pagamentos:")
+print(df[pay_feats].describe())
+
+# EXERCÍCIO 5: Gráfico dos Pagamentos (com rotação nos nomes)
+df[pay_feats].hist(bins=20, layout=(2, 3), figsize=(10, 6), xrot=45)
+plt.tight_layout()
+plt.show()
+
+# EXERCÍCIO 6: Verificando valores iguais a zero
+zero_mask = df[pay_feats] == 0
+print("Quantidade de pagamentos zero:")
+print(zero_mask.sum())
+
+# EXERCÍCIO 7: Gráfico com LOG10
+fig, axes = plt.subplots(2, 3, figsize=(10, 6))
+axes = axes.flatten()
+
+for i, col in enumerate(pay_feats):
+    valores_nao_zero = df[col][df[col] > 0]
+    log_valores = valores_nao_zero.apply(np.log10)
+    axes[i].hist(log_valores, bins=20)
+    axes[i].set_title(col)
+    plt.setp(axes[i].get_xticklabels(), rotation=45, ha='right')
+
+plt.tight_layout()
+plt.show()
